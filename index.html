@@ -58,8 +58,8 @@ if(detail){
  const offers=rows.filter(r=>r[0]===brand);
  const active=offers.filter(r=>!["Nil","NA","—"].includes(r[2]));
  const top=active.slice().sort((a,b)=>rateNum(b[2])-rateNum(a[2]))[0];
- $("cards").innerHTML='<a class="detailhome" href="./">← All brands</a><div class="card" style="grid-column:1/-1"><div class="cardtop"><div><h3>'+brand+'</h3><div class="best">'+(top?'Top listed rate: '+top[2]+' · '+top[1]:'No active reward listed')+'</div></div><span class="tag">'+offers.length+' platforms</span></div><div class="offers">'+offers.map(r=>{const best=top&&r===top;let meta=[];if(r[5])meta.push('<b>Payment mode:</b> '+r[5]);if(r[3]!==null)meta.push('<b>Minimum amount:</b> ₹'+r[3]);if(r[4])meta.push('<b>Reward time:</b> '+r[4]);return '<div class="offer '+(best?'bestoffer':'')+'"><div class="offer-name">'+r[1]+'</div><div class="rate">'+r[2]+'</div><div class="offer-meta">'+(meta.length?meta.map(x=>'<span>'+x+'</span>').join(''):'<span>No reward listed</span>')+'</div></div>'}).join("")+'</div></div>';
- $("cards").querySelectorAll(".detailhome").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();selectedBrand=null;history.pushState({},"","./");render();window.scrollTo(0,0)}));
+ $("cards").innerHTML='<button type="button" class="detailhome" id="backToBrands">← All brands</button><div class="card" style="grid-column:1/-1"><div class="cardtop"><div><h3>'+brand+'</h3><div class="best">'+(top?'Top listed rate: '+top[2]+' · '+top[1]:'No active reward listed')+'</div></div><span class="tag">'+offers.length+' platforms</span></div><div class="offers">'+offers.map(r=>{const best=top&&r===top;let meta=[];if(r[5])meta.push('<b>Payment mode:</b> '+r[5]);if(r[3]!==null)meta.push('<b>Minimum amount:</b> ₹'+r[3]);if(r[4])meta.push('<b>Reward time:</b> '+r[4]);return '<div class="offer '+(best?'bestoffer':'')+'"><div class="offer-name">'+r[1]+'</div><div class="rate">'+r[2]+'</div><div class="offer-meta">'+(meta.length?meta.map(x=>'<span>'+x+'</span>').join(''):'<span>No reward listed</span>')+'</div></div>'}).join("")+'</div></div>';
+ const backButton=$("backToBrands");if(backButton)backButton.addEventListener("click",()=>{selectedBrand=null;history.replaceState({},"",location.pathname);render();window.scrollTo({top:0,behavior:"auto"})});
  $("offerCount").textContent=rows.length;$("brandCount").textContent=brands.length;$("platformCount").textContent=new Set(rows.map(r=>r[1])).size;
  return;
 }
@@ -68,7 +68,7 @@ let list=brands.filter(b=>b.toLowerCase().includes(q)||rows.some(r=>r[0]===b&&r.
 if(sort==="name")list.sort((a,b)=>a.localeCompare(b));else if(sort==="rate")list.sort((a,b)=>Math.max(...rows.filter(r=>r[0]===b).map(r=>rateNum(r[2])))-Math.max(...rows.filter(r=>r[0]===a).map(r=>rateNum(r[2]))));
 $("resultsTitle").textContent="Browse brands";$("resultCount").textContent=list.length+" brands";
 $("cards").innerHTML='<div class="brandlist" style="grid-column:1/-1">'+list.map(brand=>{const offers=rows.filter(r=>r[0]===brand),active=offers.filter(r=>!["Nil","NA","—"].includes(r[2])),top=active.slice().sort((a,b)=>rateNum(b[2])-rateNum(a[2]))[0];return '<button class="brandlink" data-brand="'+brand.replace(/"/g,"&quot;")+'"><span><strong>'+brand+'</strong><small>'+(top?'Top listed: '+top[2]+' · '+top[1]:'No active reward listed')+'<br>'+offers.length+' platform entries</small></span><span class="arrow">›</span></button>'}).join("")+'</div>';
-$("cards").querySelectorAll("[data-brand]").forEach(b=>b.addEventListener("click",()=>{selectedBrand=b.dataset.brand;history.pushState({},"","./?brand="+encodeURIComponent(selectedBrand));render();window.scrollTo(0,0)}));
+$("cards").querySelectorAll("[data-brand]").forEach(b=>b.addEventListener("click",()=>{selectedBrand=b.dataset.brand;history.replaceState({},"",location.pathname);render();window.scrollTo({top:0,behavior:"auto"})}));
 $("cards").querySelectorAll(".detailhome").forEach(a=>a.addEventListener("click",e=>{e.preventDefault();selectedBrand=null;history.pushState({},"","./");render();window.scrollTo(0,0)}));
 $("offerCount").textContent=rows.length;$("brandCount").textContent=brands.length;$("platformCount").textContent=new Set(rows.map(r=>r[1])).size;
 }
@@ -76,5 +76,5 @@ window.addEventListener("popstate",()=>{selectedBrand=new URLSearchParams(locati
 $("search").addEventListener("input",render);$("sort").addEventListener("change",render);$("timing").addEventListener("change",render);makeFilters();render();
 let installPrompt=null;window.addEventListener("beforeinstallprompt",e=>{e.preventDefault();installPrompt=e;$("installBtn").hidden=false});$("installBtn").addEventListener("click",async()=>{if(!installPrompt){alert('In Brave, open the browser menu and choose “Install app” or “Add to Home screen”.');return}installPrompt.prompt();await installPrompt.userChoice;installPrompt=null;$("installBtn").hidden=true});
 if("serviceWorker" in navigator && location.protocol.startsWith("http"))window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));
-if(new URLSearchParams(location.search).has("brand")){$("splash").classList.add("hide")}else{window.addEventListener("load",()=>setTimeout(()=>$("splash").classList.add("hide"),1600))}
+window.addEventListener("load",()=>setTimeout(()=>$("splash").classList.add("hide"),1600));
 </script></body></html>
