@@ -1,0 +1,15 @@
+{
+  "id":"./",
+  "name":"Voucher Neon - Rewards Finder",
+  "short_name":"Voucher Neon",
+  "description":"Compare voucher rewards, caps, credit timing and payment methods.",
+  "start_url":"./",
+  "scope":"./",
+  "display":"standalone",
+  "orientation":"portrait-primary",
+  "background_color":"#080a18",
+  "theme_color":"#090b1d",
+  "icons":[
+    {"src":"./icon.svg","sizes":"any","type":"image/svg+xml","purpose":"any maskable"}
+  ]
+}
