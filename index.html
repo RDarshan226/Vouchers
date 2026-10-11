@@ -62,7 +62,7 @@ if(detail){
  $("offerCount").textContent=rows.length;$("brandCount").textContent=brands.length;$("platformCount").textContent=new Set(rows.map(r=>r[1])).size;
  return;
 }
-$("filters").style.display="";$("platforms").style.display="";
+$("filters").style.display="";$("platforms").style.display="none";$("timing").style.display="none";
 let list=brands.filter(b=>b.toLowerCase().includes(q)||rows.some(r=>r[0]===b&&r.slice(1).join(" ").toLowerCase().includes(q)));
 if(sort==="name")list.sort((a,b)=>a.localeCompare(b));else if(sort==="rate")list.sort((a,b)=>Math.max(...rows.filter(r=>r[0]===b).map(r=>rateNum(r[2])))-Math.max(...rows.filter(r=>r[0]===a).map(r=>rateNum(r[2]))));
 $("resultsTitle").textContent="Browse brands";$("resultCount").textContent=list.length+" brands";
